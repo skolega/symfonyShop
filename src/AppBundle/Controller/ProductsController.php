@@ -16,6 +16,7 @@ class ProductsController extends Controller
             'products' => $this->getProducts(),
         ]);
     }
+    
     private function getProducts()
     {
         $file = file('product.txt');

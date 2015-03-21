@@ -2,29 +2,60 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Strona gÅ‚Ã³wna{% endblock %}</title>
+        <title>{% block title %}Strona główna{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <div class="wrapper" style="width:960px; margin:auto">
-        <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a href="{{ path('homepage') }}">Strona gÅ‚Ã³wna</a></li>
-            <li role="presentation"><a href="{{ path('products_list') }}">Produkty</a></li>
-            <li role="presentation"><a href="{{ path('basket') }}">Koszyk</a></li>
-        </ul>
-        
-        {% for flashMessage in app.session.flashbag.get('notice') %}
-            <div class="alert alert-success" role="alert">{{ flashMessage }}</div>
-        {% endfor %}
-        
-        {% block body %}{% endblock %}
-        {% block javascripts %}
-            <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        {% endblock %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    {#{% set currentPath = path(app.request.attributes.get('_route')) %}#}
+                    {% set currentPath = "" %}
+                    <ul class="nav nav-tabs">
+                        <li role="presentation"
+                            {% if currentPath == path('homepage') %}
+                                class="active"
+                            {% endif %}
+                            ><a href="{{ path('homepage') }}">Strona główna</a></li>
+                        <li role="presentation"
+                            {% if currentPath == path('products_list') %}
+                                class="active"
+                            {% endif %}
+                            ><a href="{{ path('products_list') }}">Produkty</a></li>
+                        <li role="presentation"
+                            {% if currentPath == path('basket') %}
+                                class="active"
+                            {% endif %}
+                            ><a href="{{ path('basket') }}">Koszyk</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    Left side
+                </div>
+                <div class="col-md-10">
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            {{ flashMessage }}
+                        </div>
+                    {% endfor %}
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                ShopApp
+            </div>
+        </div>
     </div>
-    </body>
+    {% block javascripts %}
+        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    {% endblock %}
+</body>
 </html>

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}{% endblock %}
+{% block body %}
+    <h1></h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>nazwa</th>
+                <th>cena</th>
+                <th>opis</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+                <tr>
+                    <td>{{ product_details.id }}</td>
+                    <td>{{ product_details.name }}</td>
+                    <td>{{ product_details.price }}</td>
+                    <td>{{ product_details.desc }}</td>
+                    <td><a href="{{ path('basket_add', {'id': product_details.id}) }}" class="btn btn-primary">Dodaj do koszyka</a></td>
+                </tr>
+
+
+
+    </tbody>
+</table>
+{% endblock %}
