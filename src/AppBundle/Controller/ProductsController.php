@@ -1,40 +1,35 @@
 <?php
+
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Category;
 
 class ProductsController extends Controller
 {
+
     /**
-     * @Route("/produkty" , name="products_list")
+     * @Route("/produkty/{id}", name="products_list", defaults={"id" = false})
      */
-    
-    public function indexAction()
+    public function indexAction(Category $category = null)
     {
-        return $this->render('products/index.html.twig' , [
-            'products' => $this->getProducts(),
+
+        if ($category) {
+            $products = $this->getDoctrine()
+                    ->getRepository('AppBundle:Product')
+                    ->findBy(['category' => $category]);
+        } else {
+            $products = $this->getDoctrine()
+                    ->getRepository('AppBundle:Product')
+                    ->findAll();
+        }
+
+
+
+        return $this->render('products/index.html.twig', [
+                    'products' => $products,
         ]);
     }
-    
-    private function getProducts()
-    {
-        $file = file('product.txt');
-        $products = array();
-        
-        foreach ($file as $p) 
-        {
-            $e = explode(':', trim($p));
-            $products[$e[0]] = array(
-                'id' => $e[0],
-                'name' => $e[1],
-                'price' => $e[2],
-                'desc' => $e[3],
-                'quantity' => 1,
-            );
-        }
-        
-        return $products;
-    }
-}
 
+}
