@@ -2,6 +2,7 @@
 {% block title %}Produkty{% endblock %}
 {% block body %}
     <h1>Lista produktów</h1>
+    <a href =" {{ path('products_add') }}" class="btn btn-primary" title="Dodaj nowy produkt">Dodaj nowy produkt</a>
     {% for product in products %}
         {% if loop.first or (loop.index % 4) == 0 %}
             <div class="row">
