@@ -9,30 +9,34 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+        
         <div class="container-fluid">
+        
             <div class="row">
                 <div class="col-md-12">
-                    {#{% set currentPath = path(app.request.attributes.get('_route')) %}#}
-                    {% set currentPath = "" %}
+                    
+                    {% set currentPath = app.request.get('_route') %}
                     <ul class="nav nav-tabs">
                         <li role="presentation"
-                            {% if currentPath == path('homepage') %}
+                            {% if currentPath == 'homepage' %}
                                 class="active"
                             {% endif %}
-                            ><a href="{{ path('homepage') }}">Strona główna</a></li>
+                        ><a href="{{ path('homepage') }}">Strona główna</a></li>
                         <li role="presentation"
-                            {% if currentPath == path('products_list') %}
+                            {% if currentPath == 'products_list' %}
                                 class="active"
                             {% endif %}
-                            ><a href="{{ path('products_list') }}">Produkty</a></li>
+                        ><a href="{{ path('products_list') }}">Produkty</a></li>
                         <li role="presentation"
-                            {% if currentPath == path('basket') %}
+                            {% if currentPath == 'basket' %}
                                 class="active"
                             {% endif %}
-                            ><a href="{{ path('basket') }}">Koszyk</a></li>
+                        ><a href="{{ path('basket') }}">Koszyk</a></li>
                     </ul>
+                    
                 </div>
             </div>
+                    
             <div class="row">
                 <div class="col-md-2">
                     {{ render(controller('AppBundle:Category:list')) }}
@@ -44,18 +48,23 @@
                             {{ flashMessage }}
                         </div>
                     {% endfor %}
-                {% block body %}{% endblock %}
+                            
+                    {% block body %}{% endblock %}
+                            
+                </div>
+            </div>    
+            
+            <div class="row">
+                <div class="col-md-12">
+                    ShopApp
+                </div>
             </div>
+            
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                ShopApp
-            </div>
-        </div>
-    </div>
-    {% block javascripts %}
-        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    {% endblock %}
-</body>
+        
+        {% block javascripts %}
+            <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        {% endblock %}
+    </body>
 </html>
