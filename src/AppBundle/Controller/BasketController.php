@@ -16,6 +16,11 @@ class BasketController extends Controller
      */
     public function indexAction(Request $request)
     {
+        
+        $qb = $this
+                ->getDoctrine()
+                ->getMenager
+                
         $session = $request->getSession();
 
         $basket = $session->get('basket', array());

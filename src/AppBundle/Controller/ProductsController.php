@@ -18,6 +18,7 @@ class ProductsController extends Controller
         $getProductsQuery = $this->getDoctrine()
                 ->getRepository('AppBundle:Product')
                 ->getProductsQuery($category);
+        
         $paginator = $this->get('knp_paginator');
         $products = $paginator->paginate(
                 $getProductsQuery, $request->query->get('page', 1), 8
