@@ -17,8 +17,8 @@ class BasketController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->render('Basket/index.html.twig',
-            array('basket' => $this->get('basket'))
+
+        return $this->render('Basket/index.html.twig', array('basket' => $this->get('basket'))
         );
     }
 
@@ -29,12 +29,16 @@ class BasketController extends Controller
     {
         if (is_null($product)) {
             $this->addFlash('notice', 'Produkt który próbujesz dodać nie został znaleziony');
-            return $this - redirectToRoute('products_list');
+            return $this->redirectToRoute('products_list');
         }
         $basket = $this->get('basket');
-        $basket->add($product);
 
-        $this->addFlash('notice', sprintf('Produkt %s został dodany do koszyka', $product->getName()));
+        if ($product->getAmount() > 0) {
+            $basket->add($product);
+            $this->addFlash('notice', sprintf('Produkt %s został dodany do koszyka', $product->getName()));
+        } else {
+            $this->addFlash('notice', 'Nie posiadamy takiej ilości produktu');
+        }
 
         return $this->redirectToRoute('basket');
     }
@@ -45,10 +49,9 @@ class BasketController extends Controller
     public function removeAction(Product $product)
     {
         $basket = $this->get('basket');
-        try{
+        try {
             $basket->remove($product);
             $this->addFlash('notice', sprintf('Produkt %s został usunięty z koszyka', $product->getName()));
-            
         } catch (\Exception $ex) {
             $this->addFlash('notice', $ex->getMessage());
         }
@@ -62,13 +65,11 @@ class BasketController extends Controller
     public function updateAction($id, $quantity, Request $request)
     {
 
-        $session = $request->getSession();
-        $basket = $session->get('basket', array());
-        $products = $this->getProducts();
+        $basket = $this->get('basket');
+        $products = $basket->getProducts();
 
-        $session->set('basket', $basket);
-        $products[$id]['quantity'] = 3;
-        $this->addFlash('notice', 'Tu powinno sie zmienić ilość produktu ' . $products[$id]['name'] . ' na ' . $products[$id]['quantity']);
+        $products[$id]['quantity'] += $quantity;
+        $this->addFlash('notice', 'Zmieniono ilość ' . $products[$id]['name'] . ' na ' . $products[$id]['quantity']);
 
         return $this->redirectToRoute('basket');
     }
@@ -78,11 +79,11 @@ class BasketController extends Controller
      */
     public function clearAction()
     {
-        
+
         //alrternatywnie
         $this->get('basket')
                 ->clear();
-       
+
         $this->addFlash('notice', 'Koszyk został pomyślnie wyczyszczony');
 
         return $this->redirectToRoute('products_list');
@@ -96,25 +97,6 @@ class BasketController extends Controller
     {
         $this->addFlash('notice', 'Towar Kupiony :)');
         return $this->redirectToRoute('basket');
-    }
-
-    private function getProducts()
-    {
-        $file = file('product.txt');
-        $products = array();
-
-        foreach ($file as $p) {
-            $e = explode(':', trim($p));
-            $products[$e[0]] = array(
-                'id' => $e[0],
-                'name' => $e[1],
-                'price' => $e[2],
-                'desc' => $e[3],
-                'quantity' => 1,
-            );
-        }
-
-        return $products;
     }
 
     private function getProduct($id)

@@ -3,31 +3,24 @@
 
 {% block title %}{% endblock %}
 {% block body %}
-    <h1></h1>
+    <div class="col-sm-4 col-md-4">
+        <div class="thumbnail clearfix">
+            <div class="caption">
+                <h3>{{ product_details.name }}<span class="badge">{{ product_details.amount }}</span></h3>
+                <p>{{ product_details.description }}</p>
+                <div class="pull-left">
+                </div>
+                <div class="pull-right">
+                    <h4 class="text-danger">{{ product_details.price }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 col-md-8">
+        <img src="http://placehold.it/500x500" alt="" class="img-thumbnail">
+    </div>
+    <a href="{{ path('basket_add', {'id': product_details.id}) }}" class="btn btn-primary">Dodaj do koszyka</a>
+  <FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);
+        return true;" class="btn btn-secondary"></FORM>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>nazwa</th>
-                <th>cena</th>
-                <th>opis</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-
-
-                <tr>
-                    <td>{{ product_details.id }}</td>
-                    <td>{{ product_details.name }}</td>
-                    <td>{{ product_details.price }}</td>
-                    <td>{{ product_details.desc }}</td>
-                    <td><a href="{{ path('basket_add', {'id': product_details.id}) }}" class="btn btn-primary">Dodaj do koszyka</a></td>
-                </tr>
-
-
-
-    </tbody>
-</table>
 {% endblock %}

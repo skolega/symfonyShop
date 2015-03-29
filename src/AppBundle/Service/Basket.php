@@ -38,7 +38,6 @@ class Basket
                 'quantity' => 0
             );
         }
-        
         $products[$product->getId()]['quantity'] += $quantity;
         
         $this->session->set('basket', $products);

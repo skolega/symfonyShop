@@ -11,7 +11,7 @@ class LoadProductsData extends AbstractFixture implements OrderedFixtureInterfac
 {
     public function getOrder()
     {
-        return 2;
+        return 1;
     }
 
     public function load(ObjectManager $manager)
@@ -20,12 +20,11 @@ class LoadProductsData extends AbstractFixture implements OrderedFixtureInterfac
 
         for ($j = 0; $j < 200; $j++) {
             $product = new Product();
-            $product->setName($faker->sentence(2));
+            $product->setName($faker->company);
             $product->setDescription($faker->text());
             $product->setPrice($faker->numberBetween(50, 999));
             $product->setAmount($faker->numberBetween(1, 30));
             $product->setCategory($this->getReference('category' . $faker->numberBetween(1, 11)));
-
             $manager->persist($product);
         }
         

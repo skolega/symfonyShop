@@ -5,4 +5,25 @@
             {{ category.name }}
         </a>
     {% endfor %}
+
+</div>
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Koszyk</div>
+    <table class="table-bordered">
+        <thead>
+            <tr>
+                <th>Produkt</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in basket.products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
