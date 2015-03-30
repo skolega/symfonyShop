@@ -69,4 +69,30 @@ class Basket
         return $this;
         
     }
+    
+     public function getPriceSum()
+    {
+        $products = $this->getProducts();
+
+        $productPriceSum = 0;
+
+        foreach ($products as $product => $value) {
+            $productPriceSum += $value['price'];
+        }
+
+        return $productPriceSum;
+    }
+
+    public function getQuantitySum()
+    {
+        $products = $this->getProducts();
+
+        $quantitySum = 0;
+
+        foreach ($products as $value) {
+            $quantitySum += $value['quantity'];
+        }
+
+        return $quantitySum;
+    }
 }

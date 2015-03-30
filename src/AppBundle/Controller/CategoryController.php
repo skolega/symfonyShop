@@ -35,6 +35,7 @@ class CategoryController extends Controller
         return $this->render('Category/list.html.twig', [
                     'categories' => $categories,
                     'basket' => $this->get('basket'),
+                    'basketvalue' => $this->get('basket')->getPriceSum(),
         ]);
     }
 

@@ -8,10 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Category;
 use AppBundle\Form\ProductType;
 
-function functionName($param)
-{
-    
-}
 
 class ProductsController extends Controller
 {

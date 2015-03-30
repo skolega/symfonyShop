@@ -17,8 +17,13 @@ class BasketController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $basket = $this->get('basket');
 
-        return $this->render('Basket/index.html.twig', array('basket' => $this->get('basket'))
+        return $this->render('Basket/index.html.twig', array(
+                    'basket' => $basket,
+                    'sum' => $basket->getPriceSum(),
+                    'quantitySum' => $basket->getQuantitySum(),
+                        )
         );
     }
 

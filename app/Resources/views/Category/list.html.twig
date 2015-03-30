@@ -9,21 +9,22 @@
 </div>
 <div class="panel panel-default">
     <!-- Default panel contents -->
-    <div class="panel-heading">Koszyk</div>
+    <div class="panel-heading">W koszyku posiadasz</div>
     <table class="table-bordered">
-        <thead>
-            <tr>
-                <th>Produkt</th>
-
-            </tr>
-        </thead>
         <tbody>
+            {% set i = 1 %}
             {% for product in basket.products %}
-                <tr>
-                    <td>{{ product.name }}</td>
 
+                <tr>
+                    <td colspan="2">{{ i }}. {{ product.name }}</td>                    
                 </tr>
+                {% set i = i + 1 %}
             {% endfor %}
+            <tr>
+                <td>WARTOŚĆ</td>
+                <td>{{ basketvalue }} zł</td>
+            </tr>
+            
         </tbody>
     </table>
 </div>
