@@ -1,0 +1,31 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}AppBundle:Order:index{% endblock %}
+
+{% block body %}
+    <h1>Zamówienia</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Data</th>
+                <th>Suma</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td></td>
+                    <td></td>
+                    <td><a href="{{ path('edit_order', {'id': order.id}) }}" class="btn btn-primary">Zobacz</a></td>
+                    <td><a href="{{ path('realise_order', {'id': order.id}) }}" class="btn btn-primary">Realizuj</a></td>
+                    <td><a href="{{ path('remove_order', {'id': order.id}) }}" class="btn btn-primary">Usuń</a></td>
+                </tr>                         
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -112,6 +112,8 @@ class BasketController extends Controller
             $product = $em->getRepository('AppBundle:Product')->find($value['id']);
             $product->addOrder($orders);
             $orders->addProduct($product);
+            $orders->setCreatedAt();
+            $orders->setModifiedAt();
         }
         
         $em->persist($orders);
