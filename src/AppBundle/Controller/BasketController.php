@@ -6,7 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Product;
+use AppBundle\Entity\Orders;
 
 class BasketController extends Controller
 {
@@ -95,13 +97,28 @@ class BasketController extends Controller
     }
 
     /**
-     * @Route("/koszyk/kup", name="basket_buy")
+     * @Route("/koszyk/kup", name="basket_order")
      * @Template()
      */
-    public function buyAction()
+    public function orderAction()
     {
-        $this->addFlash('notice', 'Towar Kupiony :)');
-        return $this->redirectToRoute('basket');
+        $basket = $this->get('basket');
+        $products = $basket->getProducts();
+        
+        $em = $this->getDoctrine()->getManager();
+        $orders = new Orders();
+        
+        foreach ($products as $value) {
+            $product = $em->getRepository('AppBundle:Product')->find($value['id']);
+            $product->addOrder($orders);
+            $orders->addProduct($product);
+        }
+        
+        $em->persist($orders);
+        $em->persist($product);
+        $em->flush();
+        $basket->clear();
+        return $this->redirectToRoute('products_list');
     }
 
     private function getProduct($id)

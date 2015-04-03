@@ -55,6 +55,13 @@ class Product
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      */
     private $category;
+    
+    /**
+     * 
+     * @ORM\ManyToMany(targetEntity="Orders", inversedBy="products")
+     */
+    
+    private $orders;
 
     /**
      * Get id
@@ -180,5 +187,45 @@ class Product
     public function getCategory()
     {
         return $this->category;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->orders = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add orders
+     *
+     * @param \AppBundle\Entity\Orders $orders
+     * @return Product
+     */
+    public function addOrder(\AppBundle\Entity\Orders $orders)
+    {
+        $this->orders[] = $orders;
+
+        return $this;
+    }
+
+    /**
+     * Remove orders
+     *
+     * @param \AppBundle\Entity\Orders $orders
+     */
+    public function removeOrder(\AppBundle\Entity\Orders $orders)
+    {
+        $this->orders->removeElement($orders);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOrders()
+    {
+        return $this->orders;
     }
 }

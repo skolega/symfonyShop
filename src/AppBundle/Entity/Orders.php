@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Category
+ * Orders
  *
- * @ORM\Table(name="category")
+ * @ORM\Table()
  * @ORM\Entity
  */
-class Category
+class Orders
 {
 
     /**
@@ -24,17 +24,9 @@ class Category
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
-    
-//produkt moze miec jedna kategorie, kategoria może mieć wiele produktów
-
-    /**
-     *
-     * @ORM\OneToMany(targetEntity="Product", mappedBy="category")
+     * 
+     * @ORM\ManyToMany(targetEntity="Product", mappedBy="orders")
+     * 
      */
     private $products;
 
@@ -53,34 +45,12 @@ class Category
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return Category
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * Add products
      *
      * @param \AppBundle\Entity\Product $products
-     * @return Category
+     * @return Orders
      */
     public function addProduct(\AppBundle\Entity\Product $products)
     {
@@ -108,10 +78,4 @@ class Category
     {
         return $this->products;
     }
-    
-    public function __toString()
-    {
-        return $this->name;
-    }
-
 }
