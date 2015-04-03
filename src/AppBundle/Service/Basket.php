@@ -77,7 +77,7 @@ class Basket
         $productPriceSum = 0;
 
         foreach ($products as $product => $value) {
-            $productPriceSum += $value['price'];
+            $productPriceSum += $value['price'] * $value['quantity'];
         }
 
         return $productPriceSum;
