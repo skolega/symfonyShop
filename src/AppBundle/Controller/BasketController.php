@@ -114,6 +114,8 @@ class BasketController extends Controller
             $orders->addProduct($product);
             $orders->setCreatedAt();
             $orders->setModifiedAt();
+            $orders->setOrderValue($basket->getPriceSum());
+            $orders->setRealised(FALSE);
         }
         
         $em->persist($orders);

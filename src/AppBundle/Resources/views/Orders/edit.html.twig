@@ -2,6 +2,35 @@
 
 {% block title %}AppBundle:Orders:edit{% endblock %}
 
+
 {% block body %}
-<h1>Welcome to the Orders:edit page</h1>
+    <h1>Szczegóły zamówienia Nr.{{ order.id }}</h1>
+    <p>z dnia {{ order.getCreatedAt|date('d/m/y') }}</p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Zamwiony produkt</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set number = 1 %}
+            {% for product in products %}
+                <tr>
+                    <td>{{ number }} . <a href="{{ path('product', {'id': product.id}) }}">{{ product.name }}</a></td>
+                    <td></td>
+                </tr>                         
+                {% set number = number + 1 %}
+                {% if loop.last %} 
+
+                    <tr>
+                        <td>SUMA ZAMOWIONYCH PRODUKTOW</td>
+                        <td>{{ order.getOrderValue }} zł</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href =" {{ path('orders_list') }} " class="btn btn-primary" title="Go to orders list">Back</a>
 {% endblock %}

@@ -31,9 +31,16 @@ class OrdersController extends Controller
      */
     public function editAction($id)
     {
+        $order = $this->getDoctrine()
+                ->getRepository('AppBundle:Orders')
+                ->find($id);
+        
+        $products = $order->getProducts();
         return array(
-                // ...
-            );    }
+            'products' => $products,
+            'order' => $order,
+        );
+    }
 
     /**
      * @Route("/zamowienia/usun/{id}", name="remove_order")
@@ -59,8 +66,15 @@ class OrdersController extends Controller
      */
     public function realiseAction($id)
     {
-        return array(
-                // ...
-            );    }
-
+        $em = $this->getDoctrine()->getManager();
+        
+        $order = $this->getDoctrine()
+                ->getRepository('AppBundle:Orders')
+                ->find($id);
+        
+        $order->setRealised(TRUE);
+        $em->flush();
+        
+        return $this->redirectToRoute('orders_list');
+    }
 }

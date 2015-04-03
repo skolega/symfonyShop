@@ -24,27 +24,25 @@ class Orders
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="created", type="datetime")
      */
     protected $created_at;
+    
+    
 
     /**
      * @ORM\Column(type="datetime")
      */
     protected $modified_at;
-
+    
+    
     /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
+     * @var string
+     *
+     * @ORM\Column(name="order_value", type="decimal", precision=10, scale=2)
      */
-    public function updatedTimestamps()
-    {
-        $this->setModifiedAt(new \DateTime(date('Y-m-d H:i:s')));
+    protected $order_value;
 
-        if ($this->getCreatedAt() == null) {
-            $this->setCreatedAt(new \DateTime(date('Y-m-d H:i:s')));
-        }
-    }
 
     /**
      * 
@@ -52,6 +50,13 @@ class Orders
      * 
      */
     private $products;
+    
+    /**
+     * @var string $realised
+     * 
+     * @ORM\Column(name="realised", type="boolean")
+     */
+    private $realised;
 
     public function __construct()
     {
@@ -101,4 +106,71 @@ class Orders
         return $this->products;
     }
 
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     * @return Orders
+     */
+    public function setCreatedAt()
+    {
+        $this->created_at = new \DateTime("now");
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set modified_at
+     *
+     * @param \DateTime $modifiedAt
+     * @return Orders
+     */
+    public function setModifiedAt()
+    {
+        $this->modified_at = new \DateTime("now");
+
+    }
+
+    /**
+     * Get modified_at
+     *
+     * @return \DateTime 
+     */
+    public function getModifiedAt()
+    {
+        return $this->modified_at;
+    }
+
+
+    /**
+     * Set order_value
+     *
+     * @param string $orderValue
+     * @return Orders
+     */
+    public function setOrderValue($orderValue)
+    {
+        $this->order_value = $orderValue;
+
+        return $this;
+    }
+
+    /**
+     * Get order_value
+     *
+     * @return string 
+     */
+    public function getOrderValue()
+    {
+        return $this->order_value;
+    }
 }

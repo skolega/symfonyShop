@@ -10,22 +10,31 @@
                 <th>Id</th>
                 <th>Data</th>
                 <th>Suma</th>
-                <th></th>
-                <th></th>
-                <th></th>
+                <th>Status</th>
+                <th>Operacje</th>
             </tr>
         </thead>
         <tbody>
             {% for order in orders %}
                 <tr>
                     <td>{{ order.id }}</td>
-                    <td></td>
-                    <td></td>
-                    <td><a href="{{ path('edit_order', {'id': order.id}) }}" class="btn btn-primary">Zobacz</a></td>
-                    <td><a href="{{ path('realise_order', {'id': order.id}) }}" class="btn btn-primary">Realizuj</a></td>
-                    <td><a href="{{ path('remove_order', {'id': order.id}) }}" class="btn btn-primary">Usuń</a></td>
-                </tr>                         
+                    <td>{{ order.getCreatedAt|date("m/d/Y") }}</td>
+                    <td>{{ order.getOrderValue }}</td>
+                    <td>{% if order.getRealised == FALSE %}
+                        <span class="label label-default">Oczekujące</span>
+                    {% else %}
+                        <span class="label label-success">Zrealizowane</span>
+                        {% endif %}
+                        </td>
+                        <td><a href="{{ path('edit_order', {'id': order.id}) }}" class="btn btn-primary">Zobacz zamówienie</a>
+                            <a href="{{ path('realise_order', {'id': order.id}) }}" class="btn btn-primary">Realizuj/Rozlicz</a>
+                            <a href="{{ path('remove_order', {'id': order.id}) }}" class="btn btn-primary">Usuń zamówienie</a></td>
+                    </tr> 
+            {% else %}
+                    <tr>
+                        <td colspan="5"> Brak zamówień </td>
+                    </tr>
             {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
+                        </tbody>
+                    </table>
+                    {% endblock %}

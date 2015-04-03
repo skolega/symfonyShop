@@ -32,6 +32,12 @@
                                 class="active"
                             {% endif %}
                         ><a href="{{ path('basket') }}">Koszyk</a></li>
+                        <li role="presentation"
+                            {% if currentPath == 'orders_list' %}
+                                class="active"
+                            {% endif %}>
+                            <a href =" {{ path('orders_list') }} ">Zamowienia</a>
+                        </li>
                     </ul>
                     
                 </div>
