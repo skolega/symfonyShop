@@ -9,21 +9,23 @@ use AppBundle\Entity\Orders;
 
 class OrdersController extends Controller
 {
+
     /**
      * @Route("/zamowienia", name="orders_list")
      * @Template()
      */
     public function indexAction()
     {
-        
+
         $orders = $this->getDoctrine()
                 ->getRepository('AppBundle:Orders')
                 ->findAll();
-        
-        
+
+
         return array(
-                'orders' => $orders,
-            );    }
+            'orders' => $orders,
+        );
+    }
 
     /**
      * @Route("/zamowienia/edytuj/{id}", name="edit_order")
@@ -34,7 +36,12 @@ class OrdersController extends Controller
         $order = $this->getDoctrine()
                 ->getRepository('AppBundle:Orders')
                 ->find($id);
-        
+
+        if(!$order){
+            throw $this->createNotFoundException(
+                    'Nie znaleziono zamówienia nr' . $id
+                    );
+        }
         $products = $order->getProducts();
         return array(
             'products' => $products,
@@ -49,14 +56,19 @@ class OrdersController extends Controller
     public function removeAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $order = $this->getDoctrine()
                 ->getRepository('AppBundle:Orders')
                 ->find($id);
-        
+
+        if (!$order) {
+            throw $this->createNotFoundException(
+                    'Nie znaleziono zamówienia o numerze ' . $id
+            );
+        }
         $em->remove($order);
         $em->flush();
-        
+
         return $this->redirectToRoute('orders_list');
     }
 
@@ -67,14 +79,20 @@ class OrdersController extends Controller
     public function realiseAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $order = $this->getDoctrine()
                 ->getRepository('AppBundle:Orders')
                 ->find($id);
-        
+
+        if (!$order) {
+            throw $this->createNotFoundException(
+                    'Nie znaleziono zamówienia' . $id
+            );
+        }
         $order->setRealised(TRUE);
         $em->flush();
-        
+
         return $this->redirectToRoute('orders_list');
     }
+
 }

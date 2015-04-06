@@ -109,7 +109,9 @@ class BasketController extends Controller
         $orders = new Orders();
         
         foreach ($products as $value) {
-            $product = $em->getRepository('AppBundle:Product')->find($value['id']);
+            $product = $em->getRepository('AppBundle:Product')
+                    ->find($value['id']);
+            
             $product->addOrder($orders);
             $orders->addProduct($product);
             $orders->setCreatedAt();

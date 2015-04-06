@@ -4,10 +4,7 @@
 
 {% block body %}
     <h1>Koszyk</h1>
-    {% if basket.products %}
-        <a href="{{ path('basket_clear') }}" class="btn btn-danger pull-right">Wyczyśc Koszyk</a>
-        <a href="{{ path('basket_order') }}" class="btn btn-success pull-right">Kup wybrany towar</a> 
-    {% endif %}
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -46,6 +43,10 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if basket.products %}
+        <a href="{{ path('basket_clear') }}" class="btn btn-danger pull-right">Wyczyśc Koszyk</a>
+        <a href="{{ path('basket_order') }}" class="btn btn-success pull-right">Złóż Zamówienie</a> 
+    {% endif %}
 {% endblock %}
 
 
