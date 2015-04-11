@@ -72,6 +72,13 @@ class Product
      */
     
     private $orders;
+    
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="product")
+     */
+    
+    private $comments;
 
     /**
      * Get id
@@ -237,5 +244,38 @@ class Product
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param \AppBundle\Entity\Comment $comments
+     * @return Product
+     */
+    public function addComment(\AppBundle\Entity\Comment $comments)
+    {
+        $this->comments[] = $comments;
+
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param \AppBundle\Entity\Comment $comments
+     */
+    public function removeComment(\AppBundle\Entity\Comment $comments)
+    {
+        $this->comments->removeElement($comments);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }
