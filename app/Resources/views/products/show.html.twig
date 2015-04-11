@@ -20,7 +20,36 @@
         <img src="http://placehold.it/500x500" alt="" class="img-thumbnail">
     </div>
     <a href="{{ path('basket_add', {'id': product_details.id}) }}" class="btn btn-primary">Dodaj do koszyka</a>
-  <FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);
-        return true;" class="btn btn-secondary"></FORM>
+    <FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);
+            return true;" class="btn btn-secondary"></FORM>
+
+    <h2>Komentarze</h2>
+
+    <form method="post" novalidate>
+
+        <div class="form-group">
+            {{ form_row(form.content) }}
+            {#
+            {{ form_label(form.content) }}
+            {{ form.errors(form.content) }}
+            {{ form_widget(form.content) }}
+            #}
+        </div>
+        {{ form_rest(form) }}
+        <input class="btn btn-success" type="submit" value="Dodaj komentarz" />
+
+
+    </form>
+
+    {% for comment in product_details.comments if comment.verified %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>{{ comment.content }}</p>
+                <small>Dodany {{ comment.createdAt|date('d-m-Y') }}</small>
+            </div>
+        </div>
+    {% else %}
+        <p>Nie ma jeszcze żadnych komentarzy</p>
+    {% endfor %}
 
 {% endblock %}

@@ -6,23 +6,21 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CommentType extends AbstractType
+class AdminCommentType extends AbstractType
 {
-        /**
+
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('content')
-            ->add('createdAt')
-            ->add('nbVoteUp')
-            ->add('nbVoteDown')
-            ->add('verified')
-        ;
+                ->add('content', 'textarea', array(
+                    'label' => "Treść komentarza",
+                    ))->add('verified');
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -40,4 +38,5 @@ class CommentType extends AbstractType
     {
         return 'appbundle_comment';
     }
+
 }
