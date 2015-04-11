@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Comment;
 use AppBundle\Entity\Product;
-use AppBundle\Form\AdminCommentType;
+use AppBundle\Form\CommentType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class ProductsController extends Controller
         $comment = new Comment();
         $comment->setProduct($product);
         
-        $form = $this->createForm(new AdminCommentType(), $comment);
+        $form = $this->createForm(new CommentType(), $comment);
         
         $form->handleRequest($request);
         

@@ -14,11 +14,17 @@ class BasketController extends Controller
 
     /**
      * @Route("/koszyk", name="basket")
-     * @Template()
+     * 
      */
     public function indexAction(Request $request)
     {
+        
         $basket = $this->get('basket');
+        $quantities = $request->request->get('quantity', []); 
+        foreach ($quantities as $id => $quantity) {
+            
+            $basket->updateQuantity($id, $quantity);
+        }
 
         return $this->render('Basket/index.html.twig', array(
                     'basket' => $basket,
