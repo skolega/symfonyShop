@@ -11,7 +11,7 @@ class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterfac
 {
     public function getOrder()
     { 
-        return 2;
+        return 1;
     }
 
     public function load(ObjectManager $manager)
@@ -30,11 +30,10 @@ class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterfac
             'Urządzenia biurowe' 
         ];
         
-        $i = 1;
-        foreach ($categoriesNames as $categoryName) {
+        foreach ($categoriesNames as $i => $categoryName) {
             $category = new Category();
             $category->setName($categoryName);
-            $this->addReference('category'. $i++, $category);
+            $this->addReference('category'. $i, $category);
             $manager->persist($category);
         }
 

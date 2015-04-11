@@ -27,6 +27,9 @@ class Basket
     
     public function add(Product $product, $quantity = 1)
     {
+        if($product->getAmount() <= 0){
+            throw new \Exception('Produkt nie został znaleziony');
+        }
         $products = $this->getProducts();
         
         if(!array_key_exists($product->getId(), $products)){
@@ -70,29 +73,28 @@ class Basket
         
     }
     
-     public function getPriceSum()
+     public function getPrice()
     {
-        $products = $this->getProducts();
 
-        $productPriceSum = 0;
+        $price = 0;
 
-        foreach ($products as $product => $value) {
-            $productPriceSum += $value['price'] * $value['quantity'];
+        foreach ($this->getProducts() as $product) {
+            $price += $product['price'] * $product['quantity'];
         }
 
-        return $productPriceSum;
+        return $price;
     }
 
-    public function getQuantitySum()
+    public function getQuantity()
     {
         $products = $this->getProducts();
 
-        $quantitySum = 0;
+        $quantity = 0;
 
         foreach ($products as $value) {
-            $quantitySum += $value['quantity'];
+            $quantity += $value['quantity'];
         }
 
-        return $quantitySum;
+        return $quantity;
     }
 }

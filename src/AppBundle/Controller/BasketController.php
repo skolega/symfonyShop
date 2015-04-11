@@ -2,13 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Orders;
+use AppBundle\Entity\Product;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Entity\Product;
-use AppBundle\Entity\Orders;
 
 class BasketController extends Controller
 {
@@ -23,8 +22,8 @@ class BasketController extends Controller
 
         return $this->render('Basket/index.html.twig', array(
                     'basket' => $basket,
-                    'sum' => $basket->getPriceSum(),
-                    'quantitySum' => $basket->getQuantitySum(),
+                    'sum' => $basket->getPrice(),
+                    'quantitySum' => $basket->getQuantity(),
                         )
         );
     }
@@ -32,19 +31,24 @@ class BasketController extends Controller
     /**
      * @Route("/koszyk/{id}/dodaj", name="basket_add")
      */
-    public function addAction(Product $product = null)
+    public function addAction(Request $request, Product $product = null)
     {
         if (is_null($product)) {
             $this->addFlash('notice', 'Produkt który próbujesz dodać nie został znaleziony');
-            return $this->redirectToRoute('products_list');
+            return $this->redirect($request->headers->get('referer'));
         }
-        $basket = $this->get('basket');
 
-        if ($product->getAmount() > 0) {
+
+        try {
+
+            $basket = $this->get('basket');
             $basket->add($product);
             $this->addFlash('notice', sprintf('Produkt %s został dodany do koszyka', $product->getName()));
-        } else {
-            $this->addFlash('notice', 'Nie posiadamy takiej ilości produktu');
+            return $this->redirect($request->headers->get('referer'));
+        } catch (\Exception $e) {
+
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('products_list');
         }
 
         return $this->redirectToRoute('basket');
@@ -104,22 +108,22 @@ class BasketController extends Controller
     {
         $basket = $this->get('basket');
         $products = $basket->getProducts();
-        
+
         $em = $this->getDoctrine()->getManager();
         $orders = new Orders();
-        
+
         foreach ($products as $value) {
             $product = $em->getRepository('AppBundle:Product')
                     ->find($value['id']);
-            
+
             $product->addOrder($orders);
             $orders->addProduct($product);
             $orders->setCreatedAt();
             $orders->setModifiedAt();
-            $orders->setOrderValue($basket->getPriceSum());
+            $orders->setOrderValue($basket->getPrice());
             $orders->setRealised(FALSE);
         }
-        
+
         $em->persist($orders);
         $em->persist($product);
         $em->flush();

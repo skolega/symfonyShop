@@ -17,7 +17,7 @@ class ProductType extends AbstractType
         $builder
             ->add('category')
             ->add('name')
-            ->add('description')
+            ->add('description', array('label' => 'Nazwa Produktu')) // sprawdzić na git - kadryjanek
             ->add('price')
             ->add('amount')
             

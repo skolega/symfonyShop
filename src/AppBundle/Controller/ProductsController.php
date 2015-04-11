@@ -6,8 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Category;
-use AppBundle\Form\ProductType;
-
+use AppBundle\Entity\Product;
 
 class ProductsController extends Controller
 {
@@ -20,7 +19,7 @@ class ProductsController extends Controller
         $getProductsQuery = $this->getDoctrine()
                 ->getRepository('AppBundle:Product')
                 ->getProductsQuery($category);
-        
+
         $paginator = $this->get('knp_paginator');
         $products = $paginator->paginate(
                 $getProductsQuery, $request->query->get('page', 1), 8
@@ -29,19 +28,14 @@ class ProductsController extends Controller
                     'products' => $products,
         ]);
     }
-    
-    
-    // formularz dodania produktu
+
     /**
-     * @Route("/produkty/dodaj", name="products_add")
+     * @Route("/produkt/{id}", name="product_show")
      */
-    public function addAction(Request $request)
+    public function showAction(Product $product)
     {
-        $form = $this->createForm(new ProductType());
-        $form->handleRequest($request);
-        
-        return $this->render('products/add.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('products/show.html.twig', [
+                    'product_details' => $product,
         ]);
     }
 
