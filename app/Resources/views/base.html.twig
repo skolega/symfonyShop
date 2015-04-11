@@ -9,40 +9,54 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        
+
         <div class="container-fluid">
-        
+
             <div class="row">
                 <div class="col-md-12">
-                    
+
                     {% set currentPath = app.request.get('_route') %}
                     <ul class="nav nav-tabs">
                         <li role="presentation"
                             {% if currentPath == 'homepage' %}
                                 class="active"
                             {% endif %}
-                        ><a href="{{ path('homepage') }}">Strona główna</a></li>
+                            ><a href="{{ path('homepage') }}">Strona główna</a></li>
                         <li role="presentation"
                             {% if currentPath == 'products_list' %}
                                 class="active"
                             {% endif %}
-                        ><a href="{{ path('products_list') }}">Produkty</a></li>
+                            ><a href="{{ path('products_list') }}">Produkty</a></li>
                         <li role="presentation"
                             {% if currentPath == 'basket' %}
                                 class="active"
                             {% endif %}
-                        ><a href="{{ path('basket') }}">Koszyk</a></li>
+                            ><a href="{{ path('basket') }}">Koszyk</a></li>
                         <li role="presentation"
                             {% if currentPath == 'orders_list' %}
                                 class="active"
                             {% endif %}>
                             <a href =" {{ path('orders_list') }} ">Zamowienia</a>
                         </li>
+                        <li role="presentation">
+
+                            <a href =" ">Kontakt</a>
+                        </li>
+                        {% if currentPath == 'products_list' %}
+                            <li class="pull-right">
+                                <form class="navbar-form navbar-left" role="search" action="{{ path('product_search') }}">
+                                    <div class="form-group">
+                                        <input type="text" name="query" class="form-control" placeholder="Szukaj produktów">
+                                    </div>
+                                    <button type="submit" class="btn btn-default">Szukaj</button>
+                                </form>
+                            </li>
+                        {% endif %}
                     </ul>
-                    
+
                 </div>
             </div>
-                    
+
             <div class="row">
                 <div class="col-md-2">
                     {{ render(controller('AppBundle:Category:list')) }}
@@ -60,23 +74,23 @@
                             {{ flashMessage }}
                         </div>
                     {% endfor %}
-                            
-                    {% block body %}{% endblock %}
-                            
-                </div>
-            </div>    
-            
-            <div class="row">
-                <div class="col-md-12">
-                    ShopApp
-                </div>
+
+                {% block body %}{% endblock %}
+
             </div>
-            
+        </div>    
+
+        <div class="row">
+            <div class="col-md-12">
+                ShopApp
+            </div>
         </div>
-        
-        {% block javascripts %}
-            <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        {% endblock %}
-    </body>
+
+    </div>
+
+    {% block javascripts %}
+        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    {% endblock %}
+</body>
 </html>

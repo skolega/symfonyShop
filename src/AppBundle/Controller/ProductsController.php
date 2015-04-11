@@ -38,5 +38,37 @@ class ProductsController extends Controller
                     'product_details' => $product,
         ]);
     }
+    
+    
+    /**
+     * 
+     * @Route("/szukaj", name="product_search")
+     */
+    public function searchAction(Request $request)
+    {
+        $query = $request->query->get('query');
+        
+        $products = $this->getDoctrine()
+                //alternatywnie
+                //->getMenager()
+                //->createQueryBuilder()
+                //->from('AppBundle:Product','p')
+                //-----------------------------------
+                ->getRepository('AppBundle:Product')
+                ->createQueryBuilder('p')
+                //-----------------------------------
+                ->SELECT('p')
+                ->where('p.name LIKE :query')
+                ->orWhere('p.description LIKE :query')
+                ->setParameter('query', '%' .$query. '%')
+                ->getQuery()
+                ->getResult();
+        
+        
+        return $this->render('products/search.html.twig',[
+            'products' => $products,
+            'query' => $query,
+        ]);
+    }
 
 }
