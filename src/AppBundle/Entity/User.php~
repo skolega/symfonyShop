@@ -23,4 +23,21 @@ class User extends BaseUser
         parent::__construct();
         // your own logic
     }
+
+    /**
+     * @var ArrayCollection
+     * 
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="user")
+     */
+    protected $comments;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
