@@ -20,7 +20,7 @@ class LoadProductsData extends AbstractFixture implements OrderedFixtureInterfac
 
         for ($j = 0; $j < 200; $j++) {
             $product = new Product();
-            $product->setName($faker->company);
+            $product->setName($faker->text($maxNbChars = 30));
             $product->setDescription($faker->text());
             $product->setPrice($faker->numberBetween(50, 999));
             $product->setAmount($faker->numberBetween(0, 20));

@@ -92,9 +92,4 @@ class ProductsController extends Controller
         ]);
     }
 
-    /**
-     * 
-     * @Route("/komentarz/dodaj")
-     * 
-     */
 }

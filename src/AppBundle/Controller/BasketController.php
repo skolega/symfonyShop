@@ -46,7 +46,6 @@ class BasketController extends Controller
 
 
         try {
-
             $basket = $this->get('basket');
             $basket->add($product);
             $this->addFlash('notice', sprintf('Produkt %s został dodany do koszyka', $product->getName()));
