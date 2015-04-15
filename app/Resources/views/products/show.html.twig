@@ -25,31 +25,46 @@
 
     <h2>Komentarze</h2>
 
-    <form method="post" novalidate>
+    {% if not app.user %}
 
-        <div class="form-group">
-            {{ form_row(form.content) }}
-            {#
-            {{ form_label(form.content) }}
-            {{ form.errors(form.content) }}
-            {{ form_widget(form.content) }}
-            #}
-        </div>
-        {{ form_rest(form) }}
-        <input class="btn btn-success" type="submit" value="Dodaj komentarz" />
+        <p>Aby korzystać z formularza musisz się zalogować <a href="{{ path('fos_user_security_login') }}" >Zaloguj się</a>
+        
+    {% else %}
+
+        <form method="post" novalidate>
+
+            <div class="form-group">
+                {{ form_row(form.content) }}
+                {#
+                {{ form_label(form.content) }}
+                {{ form.errors(form.content) }}
+                {{ form_widget(form.content) }}
+                #}
+            </div>
+            {{ form_rest(form) }}
+            <input class="btn btn-success" type="submit" value="Dodaj komentarz" />
 
 
-    </form>
-
+        </form>
+            
+    {% endif %}
+    
     {% for comment in product_details.comments if comment.verified %}
+
         <div class="panel panel-default">
             <div class="panel-body">
+                <div class="pull-right">
+                    {{ comment.nbVoteUp }} <a href="#" title="Up"> up </a> | {{ comment.nbVoteDown }} <a href="#" title="Down"> down </a>
+                </div>
                 <p>{{ comment.content }}</p>
-                <small>Dodany {{ comment.createdAt|date('d-m-Y') }}</small>
+                <small>Dodany {{ comment.createdAt|date('d-m-Y') }} przez {{ comment.user }}</small>
             </div>
         </div>
+
     {% else %}
-        <p>Nie ma jeszcze żadnych komentarzy</p>
+        
+        <p> Nie ma jeszcze żadnych komentarzy. Dodaj swój jako pierwszy!</p>
+
     {% endfor %}
 
 {% endblock %}
