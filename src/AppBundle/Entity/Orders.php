@@ -4,11 +4,12 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\User;
 
 /**
  * Orders
  *
- * @ORM\Table()
+ * @ORM\Table(name="orders")
  * @ORM\Entity
  */
 class Orders
@@ -50,6 +51,14 @@ class Orders
      * 
      */
     private $products;
+    
+    
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders")
+     * 
+     */
+    private $user;
     
     /**
      * @var string $realised
@@ -195,5 +204,28 @@ class Orders
     public function getRealised()
     {
         return $this->realised;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     * @return Orders
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

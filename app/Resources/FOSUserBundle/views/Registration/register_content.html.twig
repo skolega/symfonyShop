@@ -1,0 +1,64 @@
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block sidebar %}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+        .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+
+
+{% endblock %}
+{% block body %}
+    <form action="{{ path('fos_user_registration_register') }}" 
+          {{ form_enctype(form) }} method="POST" class="form-signin">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.email, {'attr': {'class': 'form-control input-lg', 'placeholder': 'Email', 'required': 'required'}}) }}
+        {{ form_row(form.username, {'attr': {'class': 'form-control input-lg', 'placeholder': 'Nazwa użytkownika', 'required': 'required'}}) }}
+        {{ form_row(form.plainPassword.first, {'attr': {'class': 'form-control input-lg', 'placeholder': 'Wprowadź hasło', 'required': 'required'}}) }}
+        {{ form_row(form.plainPassword.second, {'attr': {'class': 'form-control input-lg', 'placeholder': 'Powtórz hasło', 'required': 'required'}}) }}
+        <input class="btn btn-lg btn-primary btn-block" id="_submit" name="_submit" type="submit" value="{{ 'registration.submit'|trans }}" />
+        {{ form_end(form) }}
+            
+    </form>
+
+{% endblock %}

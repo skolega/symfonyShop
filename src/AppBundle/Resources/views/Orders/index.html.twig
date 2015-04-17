@@ -27,14 +27,19 @@
                         {% endif %}
                         </td>
                         <td><a href="{{ path('edit_order', {'id': order.id}) }}" class="btn btn-primary">Zobacz zamówienie</a>
-                            <a href="{{ path('realise_order', {'id': order.id}) }}" class="btn btn-primary">Realizuj/Rozlicz</a>
-                            <a href="{{ path('remove_order', {'id': order.id}) }}" class="btn btn-primary">Usuń zamówienie</a></td>
+                            {% if app.user %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('realise_order', {'id': order.id}) }}" class="btn btn-primary">Realizuj/Rozlicz</a>
+                                    <a href="{{ path('remove_order', {'id': order.id}) }}" class="btn btn-primary">Usuń zamówienie</a></td>
+                                {% endif %}
+                            {% endif %}
                     </tr> 
-            {% else %}
-                    <tr>
-                        <td colspan="5"> Brak zamówień </td>
-                    </tr>
-            {% endfor %}
+
+                    {% else %}
+                        <tr>
+                            <td colspan="5"> Brak zamówień </td>
+                        </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                     {% endblock %}

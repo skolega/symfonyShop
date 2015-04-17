@@ -17,10 +17,7 @@ class OrdersController extends Controller
     public function indexAction()
     {
 
-        $orders = $this->getDoctrine()
-                ->getRepository('AppBundle:Orders')
-                ->findAll();
-
+        $orders = $this->getUser()->getOrders();
 
         return array(
             'orders' => $orders,
@@ -28,7 +25,7 @@ class OrdersController extends Controller
     }
 
     /**
-     * @Route("/zamowienia/edytuj/{id}", name="edit_order")
+     * @Route("/zamowienia/edytuj/{id}/", name="edit_order")
      * @Template()
      */
     public function editAction($id)
@@ -37,10 +34,10 @@ class OrdersController extends Controller
                 ->getRepository('AppBundle:Orders')
                 ->find($id);
 
-        if(!$order){
+        if (!$order) {
             throw $this->createNotFoundException(
                     'Nie znaleziono zamówienia nr' . $id
-                    );
+            );
         }
         $products = $order->getProducts();
         return array(

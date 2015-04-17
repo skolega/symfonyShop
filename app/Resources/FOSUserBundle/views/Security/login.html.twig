@@ -67,6 +67,7 @@
             </label>
         </div>
         <button class="btn btn-lg btn-primary btn-block" id="_submit" name="_submit" type="submit">{{ 'security.login.submit'|trans }}</button>
+        <a href="{{ path('fos_user_registration_register') }}">Zarejestruj się</a>
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
     </form>
 
