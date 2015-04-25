@@ -9,44 +9,37 @@ use AppBundle\Entity\User;
 
 class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
 {
-    public function load(ObjectManager $manager)
-    {
-        $faker = \Faker\Factory::create('pl_PL');
-        
-        $userAdmin = new User;
-        $userAdmin->setUsername('admin');
-        $userAdmin->setPlainPassword('admin');
-        $userAdmin->setRoles(array('ROLE_ADMIN'));
-        $userAdmin->setEnabled(true);
-        $userAdmin->setEmail($faker->email);
-        $this->addReference('user'. 11, $userAdmin);
-//        $userAdmin->setRoles(['ROLE_ADMIN']);
-        $manager->persist($userAdmin);
-        
-        $userUser = new User;
-        $userUser->setUsername('user');
-        $userUser->setPlainPassword('user');
-        $userUser->setEmail($faker->email);
-        $userUser->setEnabled(true);
-        $this->addReference('user'. 10, $userUser);
-        $manager->persist($userUser);
-        
-        for($j=0 ; $j < 10 ; $j++){
-            $user = new User;
-            $user->setUsername($faker->userName);
-            $user->setPlainPassword($faker->word);
-            $user->setEmail($faker->email);
-            $userUser->setEnabled(true);
-            $this->addReference('user'. $j, $user);
-            $manager->persist($user);
-            
-        }
-        
-        $manager->flush();
-    }
-    
     public function getOrder()
     {
         return 1;
+    }
+
+    public function load(ObjectManager $manager)
+    {
+        $faker = \Faker\Factory::create('pl_PL');
+
+        $user = new User();
+        $user->setUsername('admin');
+        $user->setEmail($faker->email);
+        $user->setPlainPassword('admin');
+        $user->setEnabled(true);
+        $user->addRole('ROLE_ADMIN');
+
+        $this->addReference('user_11', $user);
+        $manager->persist($user);
+
+
+        for ($j = 1; $j <= 10; $j++) {
+            $user = new User();
+            $user->setUsername('user'.$j);
+            $user->setEmail($faker->email);
+            $user->setPlainPassword('demo');
+            $user->setEnabled(true);
+
+            $this->addReference('user_'.$j, $user);
+            $manager->persist($user);
+        }
+
+	$manager->flush();
     }
 }

@@ -26,7 +26,11 @@
         "knplabs/knp-menu-bundle": "dev-master",
         "knplabs/knp-paginator-bundle": "dev-master",
         "fzaninotto/faker": "1.*@stable",
-        "vich/uploader-bundle": "~0.11.0"
+        "vich/uploader-bundle": "~0.11.0",
+        "javiereguiluz/easyadmin-bundle": "~1.2",
+        "hwi/oauth-bundle": "0.4.*@dev",
+        "liip/imagine-bundle": "~1.2",
+        "friendsofsymfony/jsrouting-bundle": "~1.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

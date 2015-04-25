@@ -1,15 +1,16 @@
 <?php
 
 namespace AppBundle\Entity;
-use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Comment
  *
  * @ORM\Table(name="comment")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CommentRepository")
  */
 class Comment
 {
@@ -27,8 +28,8 @@ class Comment
      *
      * @ORM\Column(name="content", type="text")
      * 
-     * @Assert\NotBlank(message="Proszę wprowadzić treść komentarza")
-     * @Assert\Length(min=15, minMessage="Komentarz musi posiadać minimum {{ limit }}")
+     * @Assert\NotBlank(message="Proszę wprowadzić treść komentarza.")
+     * @Assert\Length(min=15, minMessage="Komentarz musi posiadać conajmniej {{ limit }} znaków.")
      */
     private $content;
 
@@ -38,11 +39,6 @@ class Comment
      * @ORM\Column(name="createdAt", type="datetime")
      */
     private $createdAt;
-    
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
 
     /**
      * @var integer
@@ -57,29 +53,41 @@ class Comment
      * @ORM\Column(name="nbVoteDown", type="smallint")
      */
     private $nbVoteDown = 0;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="verified", type="boolean")
      */
     private $verified = false;
-
-
+    
     /**
-     * @var product
+     * @var Product
      * 
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="comments")
      */
     private $product;
     
     /**
-     * @var user
+     * @var User
      * 
      * @ORM\ManyToOne(targetEntity="User", inversedBy="comments")
      */
     private $user;
-    
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="CommentVote", mappedBy="comment")
+     */
+    private $votes;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime("now");
+        $this->votes = new ArrayCollection();
+    }
+
     /**
      * Get id
      *
@@ -249,5 +257,38 @@ class Comment
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Add votes
+     *
+     * @param \AppBundle\Entity\CommentVote $votes
+     * @return Comment
+     */
+    public function addVote(\AppBundle\Entity\CommentVote $votes)
+    {
+        $this->votes[] = $votes;
+
+        return $this;
+    }
+
+    /**
+     * Remove votes
+     *
+     * @param \AppBundle\Entity\CommentVote $votes
+     */
+    public function removeVote(\AppBundle\Entity\CommentVote $votes)
+    {
+        $this->votes->removeElement($votes);
+    }
+
+    /**
+     * Get votes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVotes()
+    {
+        return $this->votes;
     }
 }

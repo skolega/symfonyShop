@@ -22,7 +22,7 @@ class LoadCommentData extends AbstractFixture implements OrderedFixtureInterface
             $comment->setNbVoteDown($faker->numberBetween(1, 30));
             $comment->setNbVoteUp($faker->numberBetween(1, 30));
             $comment->setProduct($this->getReference('product' . $faker->numberBetween(0, 199)));
-            $comment->setUser($this->getReference('user' . $faker->numberBetween(0, 11)));
+            $comment->setUser($this->getReference('user_' . $faker->numberBetween(1, 11)));
             $comment->setVerified(true);
             $manager->persist($comment);
         }

@@ -4,16 +4,19 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Product
  *
  * @ORM\Table(name="product")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\ProductRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProductRepository")
+ * @Vich\Uploadable
  */
 class Product
 {
-
     /**
      * @var integer
      *
@@ -29,14 +32,22 @@ class Product
      * @ORM\Column(name="name", type="string", length=255)
      * 
      * @Assert\NotBlank()
-     * @Assert\Length(min=5, minMessage="Produkt musi zawierać minimum {{ limit }} znaków")
+     * @Assert\Length(min=5, minMessage="Tytuł musi mieć conajmniej {{ limit }} znaków.")
      */
     private $name;
+
+    /**
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(length=255, unique=true)
+     */
+    private $slug;
 
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
+     * 
+     * @Assert\NotBlank()
      */
     private $description;
 
@@ -44,8 +55,9 @@ class Product
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", precision=10, scale=2)
+     * 
      * @Assert\NotBlank()
-     * @Assert\Range(min=0.01, minMessage="Minimalna cena musi być większa niż {{ limit }} zł")
+     * @Assert\Range(min=0.01, minMessage="Cena musi być większa lub równa {{ limit }} zł.")
      */
     private $price = 0;
 
@@ -53,13 +65,13 @@ class Product
      * @var integer
      *
      * @ORM\Column(name="amount", type="integer")
+     * 
      * @Assert\NotBlank()
-     * @Assert\Range(min=0, minMessage="Minimalna ilość musi być większa niż {{ limit }} zł")
+     * @Assert\Range(min=0, minMessage="Dostępna ilość sztuk musi być większa lub równa {{ limit }}.")
      */
     private $amount = 0;
 
     /**
-     * 
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      * 
      * @Assert\NotNull(message="Proszę wybrać odpowiednią kategorię")
@@ -67,21 +79,44 @@ class Product
     private $category;
     
     /**
+     * @var ArrayCollection
      * 
-     * @ORM\ManyToMany(targetEntity="Orders", inversedBy="products")
-     */
-    
-    private $orders;
-    
-    /**
-     *
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="product")
      */
-    
     private $comments;
-    
-    public function __toString(){
-        
+
+    /**
+     * @Vich\UploadableField(mapping="product_image", fileNameProperty="imageName")
+     *
+     * @var File $imageFile
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(name="image_name", type="string", length=255, nullable=true)
+     *
+     * @var string $imageName
+     */
+    private $imageName;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
+     *
+     * @var \DateTime $createdAt
+     */
+    private $createdAt;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at", type="datetime")
+     *
+     * @var \DateTime $updatedAt
+     */
+    private $updatedAt;
+
+    public function __toString()
+    {
         return $this->name;
     }
 
@@ -93,6 +128,11 @@ class Product
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     /**
@@ -187,7 +227,6 @@ class Product
         return $this->amount;
     }
 
-
     /**
      * Set category
      *
@@ -215,40 +254,7 @@ class Product
      */
     public function __construct()
     {
-        $this->orders = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add orders
-     *
-     * @param \AppBundle\Entity\Orders $orders
-     * @return Product
-     */
-    public function addOrder(\AppBundle\Entity\Orders $orders)
-    {
-        $this->orders[] = $orders;
-
-        return $this;
-    }
-
-    /**
-     * Remove orders
-     *
-     * @param \AppBundle\Entity\Orders $orders
-     */
-    public function removeOrder(\AppBundle\Entity\Orders $orders)
-    {
-        $this->orders->removeElement($orders);
-    }
-
-    /**
-     * Get orders
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOrders()
-    {
-        return $this->orders;
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -282,5 +288,51 @@ class Product
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param string $imageName
+     */
+    public function setImageName($imageName)
+    {
+        $this->imageName = $imageName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

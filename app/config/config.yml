@@ -2,7 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-
+    
 framework:
     #esi:             ~
     translator:      { fallbacks: ["%locale%"] }
@@ -74,7 +74,7 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
-    
+
 knp_paginator:
     template:
         pagination: paginator.html.twig
@@ -83,3 +83,90 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: AppBundle\Entity\User
+    
+hwi_oauth:
+   connect:
+        account_connector: app.user.provider
+   firewall_name: main
+   fosub:
+       username_iterations: 30
+       properties:
+           facebook: facebookId
+   resource_owners:       
+       facebook:
+           type: facebook
+           client_id: %facebook.client.id%
+           client_secret: %facebook.client.secret%
+           scope:         "email"
+           options:
+               display: popup
+               
+vich_uploader:
+    db_driver: orm
+    mappings:
+        product_image:
+            uri_prefix:         images/products
+            upload_destination: %kernel.root_dir%/../web/images/products
+            inject_on_load:     false
+            delete_on_update:   true
+            delete_on_remove:   true
+    
+easy_admin:
+    site_name: 'SuperHiperSklep'
+    entities:
+        Products:
+            label: 'Produkty'
+            class: AppBundle\Entity\Product
+            list:
+                title: "Produkty"
+            form:
+                fields:
+                    - 'category'
+                    - { property: 'imageFile', type: 'file', label: 'Plik' }
+                    - 'name'
+                    - 'description'
+                    - 'price'
+                    - 'amount'                    
+        Comments:
+            label: 'Komentarze'
+            class: AppBundle\Entity\Comment
+            list:
+                title: "Komentarze"
+        Categories:
+            label: 'Kategorie'
+            class: AppBundle\Entity\Category
+            list:
+                title: "Kategorie"
+        Users:
+            label: 'Użytkownicy'
+            class: AppBundle\Entity\User
+            list:
+                title: "Użytkownicy"
+        Orders:
+            label: 'Zamówienia'
+            class: AppBundle\Entity\Orders
+            list:
+                title: "Zamówiena"
+                
+stof_doctrine_extensions:
+    default_locale: %locale%
+    orm:
+        default:
+            sluggable: true
+            timestampable: true
+            
+liip_imagine:
+    resolvers:
+       default:
+          web_path: ~
+
+    filter_sets:
+        cache: ~
+        product_image_thumb:
+            quality: 75
+            filters:
+                thumbnail: { size: [240, 200], mode: outbound }
+        product_image:
+            quality: 75
+            filters:
+                thumbnail: { size: [400, 300], mode: outbound }

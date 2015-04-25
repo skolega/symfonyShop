@@ -18,9 +18,18 @@ security:
                 csrf_provider: form.csrf_provider
             logout:       true
             anonymous:    true
+            oauth:
+                resource_owners:
+                    facebook: "/connect/login-facebook"
+                login_path:        /login
+                failure_path:      /login
+                oauth_user_provider:
+                    service: app.user.provider
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/zamowienie/, role: ROLE_USER }
+        - { path: ^/komentarze/, role: ROLE_USER }

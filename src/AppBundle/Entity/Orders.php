@@ -4,16 +4,20 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use AppBundle\Entity\User;
 
 /**
  * Orders
  *
  * @ORM\Table(name="orders")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\OrdersRepository")
  */
 class Orders
 {
+    const STATUS_NEW = 0;
+    const STATUS_REALIZATION = 1;
+    const STATUS_SEND = 2;
+    const STATUS_REALIZED = 3;
+    const STATUS_CANCELED = 4;
 
     /**
      * @var integer
@@ -25,51 +29,101 @@ class Orders
     private $id;
 
     /**
-     * @ORM\Column(name="created", type="datetime")
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    protected $created_at;
-    
-    
+    private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="smallint")
      */
-    protected $modified_at;
-    
-    
+    private $status;
+
     /**
      * @var string
      *
-     * @ORM\Column(name="order_value", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="province", type="string", length=255)
      */
-    protected $order_value;
-
+    private $province;
 
     /**
-     * 
-     * @ORM\ManyToMany(targetEntity="Product", mappedBy="orders")
-     * 
+     * @var string
+     *
+     * @ORM\Column(name="postal", type="string", length=6)
      */
-    private $products;
-    
-    
+    private $postal;
+
     /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", length=255)
+     */
+    private $city;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="street", type="string", length=255)
+     */
+    private $street;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="no", type="string", length=15)
+     */
+    private $no;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comments", type="text", nullable=true)
+     */
+    private $comments;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_price", type="decimal", precision=10, scale=2)
+     */
+    private $totalPrice;
+
+    /**
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="orders")
-     * 
      */
-    private $user;
-    
-    /**
-     * @var string $realised
-     * 
-     * @ORM\Column(name="realised", type="boolean")
-     */
-    private $realised;
+    private $createdBy;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="OrdersItem", mappedBy="order")
+     */
+    private $items;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->products = new ArrayCollection();
+        $this->items = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->status = self::STATUS_NEW;
+    }
+
+    static public function getStatusType()
+    {
+        return [
+            self::STATUS_NEW => 'Nowe',
+            self::STATUS_REALIZATION => 'W trakcie realizacji',
+            self::STATUS_SEND => 'Wysłane',
+            self::STATUS_REALIZED => 'Zrealizowane',
+            self::STATUS_CANCELED => 'Anulowane',
+        ];
     }
 
     /**
@@ -83,149 +137,265 @@ class Orders
     }
 
     /**
-     * Add products
+     * Set createdAt
      *
-     * @param \AppBundle\Entity\Product $products
+     * @param \DateTime $createdAt
      * @return Orders
      */
-    public function addProduct(\AppBundle\Entity\Product $products)
+    public function setCreatedAt($createdAt)
     {
-        $this->products[] = $products;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Remove products
-     *
-     * @param \AppBundle\Entity\Product $products
-     */
-    public function removeProduct(\AppBundle\Entity\Product $products)
-    {
-        $this->products->removeElement($products);
-    }
-
-    /**
-     * Get products
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProducts()
-    {
-        return $this->products;
-    }
-
-
-    /**
-     * Set created_at
-     *
-     * @param \DateTime $createdAt
-     * @return Orders
-     */
-    public function setCreatedAt()
-    {
-        $this->created_at = new \DateTime("now");
-    }
-
-    /**
-     * Get created_at
+     * Get createdAt
      *
      * @return \DateTime 
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
-     * Set modified_at
+     * Set status
      *
-     * @param \DateTime $modifiedAt
+     * @param integer $status
      * @return Orders
      */
-    public function setModifiedAt()
+    public function setStatus($status)
     {
-        $this->modified_at = new \DateTime("now");
-
-    }
-
-    /**
-     * Get modified_at
-     *
-     * @return \DateTime 
-     */
-    public function getModifiedAt()
-    {
-        return $this->modified_at;
-    }
-
-
-    /**
-     * Set order_value
-     *
-     * @param string $orderValue
-     * @return Orders
-     */
-    public function setOrderValue($orderValue)
-    {
-        $this->order_value = $orderValue;
+        $this->status = $status;
 
         return $this;
     }
 
     /**
-     * Get order_value
+     * Get status
+     *
+     * @return integer 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set province
+     *
+     * @param string $province
+     * @return Orders
+     */
+    public function setProvince($province)
+    {
+        $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * Get province
      *
      * @return string 
      */
-    public function getOrderValue()
+    public function getProvince()
     {
-        return $this->order_value;
+        return $this->province;
     }
 
     /**
-     * Set realised
+     * Set postal
      *
-     * @param boolean $realised
+     * @param string $postal
      * @return Orders
      */
-    public function setRealised($realised)
+    public function setPostal($postal)
     {
-        $this->realised = $realised;
+        $this->postal = $postal;
 
         return $this;
     }
 
     /**
-     * Get realised
+     * Get postal
      *
-     * @return boolean 
+     * @return string 
      */
-    public function getRealised()
+    public function getPostal()
     {
-        return $this->realised;
+        return $this->postal;
     }
 
     /**
-     * Set user
+     * Set city
      *
-     * @param \AppBundle\Entity\User $user
+     * @param string $city
      * @return Orders
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setCity($city)
     {
-        $this->user = $user;
+        $this->city = $city;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get city
+     *
+     * @return string 
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * Set street
+     *
+     * @param string $street
+     * @return Orders
+     */
+    public function setStreet($street)
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    /**
+     * Get street
+     *
+     * @return string 
+     */
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    /**
+     * Set no
+     *
+     * @param string $no
+     * @return Orders
+     */
+    public function setNo($no)
+    {
+        $this->no = $no;
+
+        return $this;
+    }
+
+    /**
+     * Get no
+     *
+     * @return string 
+     */
+    public function getNo()
+    {
+        return $this->no;
+    }
+
+    /**
+     * Set comments
+     *
+     * @param string $comments
+     * @return Orders
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return string 
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Set totalPrice
+     *
+     * @param string $totalPrice
+     * @return Orders
+     */
+    public function setTotalPrice($totalPrice)
+    {
+        $this->totalPrice = $totalPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get totalPrice
+     *
+     * @return string 
+     */
+    public function getTotalPrice()
+    {
+        return $this->totalPrice;
+    }
+    
+    /**
+     * Set createdBy
+     *
+     * @param \AppBundle\Entity\User $createdBy
+     * @return Orders
+     */
+    public function setCreatedBy(\AppBundle\Entity\User $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
      *
      * @return \AppBundle\Entity\User 
      */
-    public function getUser()
+    public function getCreatedBy()
     {
-        return $this->user;
+        return $this->createdBy;
+    }
+
+    /**
+     * Add items
+     *
+     * @param \AppBundle\Entity\OrdersItem $items
+     * @return Orders
+     */
+    public function addItem(\AppBundle\Entity\OrdersItem $items)
+    {
+        $this->items[] = $items;
+
+        return $this;
+    }
+
+    /**
+     * Remove items
+     *
+     * @param \AppBundle\Entity\OrdersItem $items
+     */
+    public function removeItem(\AppBundle\Entity\OrdersItem $items)
+    {
+        $this->items->removeElement($items);
+    }
+
+    /**
+     * Get items
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getItems()
+    {
+        return $this->items;
     }
 }

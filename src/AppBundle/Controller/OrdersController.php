@@ -4,92 +4,117 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 use AppBundle\Entity\Orders;
+use AppBundle\Entity\OrdersItem;
+use AppBundle\Form\OrdersType;
 
 class OrdersController extends Controller
 {
-
     /**
-     * @Route("/zamowienia", name="orders_list")
-     * @Template()
+     * @Route("/zamowienie/realizuj", name="orders_create")
      */
-    public function indexAction()
+    public function createAction(Request $request)
     {
+        $basket = $this->get('basket');
 
-        $orders = $this->getUser()->getOrders();
+        if (empty($basket->getProducts())) {
+            $this->addFlash('danger', 'Aby zrealizować zamówienie, musisz posiadać produkty w koszyku');
 
-        return array(
-            'orders' => $orders,
-        );
+            return $this->redirectToRoute('basket', []);
+        }
+
+        $order = new Orders();
+        $form = $this->createForm(new OrdersType(), $order);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $products = $basket->getProducts();
+
+            $order->setCreatedBy($this->getUser());
+            $order->setTotalPrice($basket->getPrice());
+
+            $em->persist($order);
+
+            foreach ($products as $product) {
+                $orderItem = new OrdersItem();
+
+                $orderItem->setOrder($order);
+                $orderItem->setProductName($product['name']);
+                $orderItem->setPrice($product['price']);
+                $orderItem->setQuantity($product['quantity']);
+
+                $em->persist($orderItem);
+            }
+
+            $em->flush();
+
+            $basket->clear(); // czyścimy koszyk po zamówieniu
+            $this->addFlash('success', "Zamówienie zostało dodane i oczekuje na realizację");
+
+            return $this->redirectToRoute('orders_list', []);
+        }
+
+        return $this->render('Orders/create.html.twig', [
+            'form' => $form->createView(),
+            'basket' => $basket,
+        ]);
     }
 
     /**
-     * @Route("/zamowienia/edytuj/{id}/", name="edit_order")
-     * @Template()
+     * @Route("/zamowienie/moje-zamowienia", name="orders_list")
      */
-    public function editAction($id)
+    public function ordersAction(Request $request)
     {
-        $order = $this->getDoctrine()
-                ->getRepository('AppBundle:Orders')
-                ->find($id);
+        $getOrdersQuery = $this->getDoctrine()
+            ->getRepository('AppBundle:Orders')
+            ->getOrdersQuery($this->getUser());
 
-        if (!$order) {
-            throw $this->createNotFoundException(
-                    'Nie znaleziono zamówienia nr' . $id
-            );
-        }
-        $products = $order->getProducts();
-        return array(
-            'products' => $products,
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $getOrdersQuery,
+            $request->query->get('page', 1),
+            10
+        );
+
+        return $this->render('Orders/list.html.twig', [
+            'orders' => $pagination,
+        ]);
+    }
+
+    /**
+     * @Route("/zamowienie/szczegoly/{id}", name="orders_show")
+     * @Security("user == order.getCreatedBy()")
+     */
+    public function ordersDetails(Orders $order)
+    {
+        return $this->render('Orders/details.html.twig', [
             'order' => $order,
-        );
+        ]);
     }
 
     /**
-     * @Route("/zamowienia/usun/{id}", name="remove_order")
-     * @Template()
+     * @Route("/zamowienie/anuluj/{id}", name="orders_cancel")
+     * @Security("user == order.getCreatedBy()")
      */
-    public function removeAction($id)
+    public function cancelAction(Orders $order)
     {
-        $em = $this->getDoctrine()->getManager();
+        if ($order->getStatus() !== Orders::STATUS_NEW) {
+            $this->addFlash('danger', 'Zamówienie, które jest w trakcie realizacji bądź zostało już zrealizowane, nie może być anulowane');
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $order->setStatus(Orders::STATUS_CANCELED);
 
-        $order = $this->getDoctrine()
-                ->getRepository('AppBundle:Orders')
-                ->find($id);
+            $em->persist($order);
+            $em->flush();
 
-        if (!$order) {
-            throw $this->createNotFoundException(
-                    'Nie znaleziono zamówienia o numerze ' . $id
-            );
+            $this->addFlash('success', 'Twoje zamówienie zostało anulowane');
         }
-        $em->remove($order);
-        $em->flush();
 
-        return $this->redirectToRoute('orders_list');
+        return $this->redirectToRoute('orders_list', []);
     }
-
-    /**
-     * @Route("/zamowienia/realizuj/{id}", name="realise_order")
-     * @Template()
-     */
-    public function realiseAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $order = $this->getDoctrine()
-                ->getRepository('AppBundle:Orders')
-                ->find($id);
-
-        if (!$order) {
-            throw $this->createNotFoundException(
-                    'Nie znaleziono zamówienia' . $id
-            );
-        }
-        $order->setRealised(TRUE);
-        $em->flush();
-
-        return $this->redirectToRoute('orders_list');
-    }
-
 }

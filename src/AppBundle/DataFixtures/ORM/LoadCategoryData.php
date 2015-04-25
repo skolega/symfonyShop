@@ -30,10 +30,11 @@ class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterfac
             'Urządzenia biurowe' 
         ];
         
-        foreach ($categoriesNames as $i => $categoryName) {
+        $i = 1;
+        foreach ($categoriesNames as $categoryName) {
             $category = new Category();
             $category->setName($categoryName);
-            $this->addReference('category'. $i, $category);
+            $this->addReference('category'. $i++, $category);
             $manager->persist($category);
         }
 

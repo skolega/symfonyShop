@@ -10,5 +10,4 @@
 /vendor/
 /bin/
 /composer.phar
-/nbproject/private/
-/standard-edition-master/
+/nbproject/*

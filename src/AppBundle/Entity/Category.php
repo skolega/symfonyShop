@@ -9,11 +9,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Category
  *
  * @ORM\Table(name="category")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
  */
 class Category
 {
-
     /**
      * @var integer
      *
@@ -29,8 +28,6 @@ class Category
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
-//produkt moze miec jedna kategorie, kategoria może mieć wiele produktów
 
     /**
      *
@@ -108,10 +105,9 @@ class Category
     {
         return $this->products;
     }
-    
+
     public function __toString()
     {
         return $this->name;
     }
-
 }
